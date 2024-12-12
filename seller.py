@@ -12,7 +12,8 @@ logger = logging.getLogger(__file__)
 
 
 def get_product_list(last_id, client_id, seller_token):
-    """Получает список товаров магазина озон.
+    """
+    Получает список товаров магазина озон.
 
     С помощью API Ozon получает словарь со списком товаров, установлено
     ограничение в 1000 товаров, поэтому нужен параметр last_id, чтобы отсчёт
@@ -23,11 +24,11 @@ def get_product_list(last_id, client_id, seller_token):
         last_id (str):  id товара для начала отсчёта
         client_id (str): идентификатор клиента
         seller_id (str): ключ продавца
-    
+
     Return:
         dict: словарь со списком товаров магазина, общее кол-во и id
         последнего товара
-    
+
     Example:
         >>> get_product('48234', '312345', 'qwe68324')
         {
@@ -59,7 +60,8 @@ def get_product_list(last_id, client_id, seller_token):
 
 
 def get_offer_ids(client_id, seller_token):
-    """Получает артикулы товаров магазина озон
+    """
+    Получает артикулы товаров магазина озон
 
     get_offer_ids использует в цикле функцию get_product_list и бесконечно
     итерируется пока не добавит все артикулы в список
@@ -91,7 +93,8 @@ def get_offer_ids(client_id, seller_token):
 
 
 def update_price(prices: list, client_id, seller_token):
-    """Обновляет цены товаров в магазине с помощью API Ozon
+    """
+    Обновляет цены товаров в магазине с помощью API Ozon
 
     Args:
         prices(list): список словарей с ценами и артикулами для изменения
@@ -128,7 +131,8 @@ def update_price(prices: list, client_id, seller_token):
 
 
 def update_stocks(stocks: list, client_id, seller_token):
-    """Обновляет остатки товаров в магазине с помощью API Ozon
+    """
+    Обновляет остатки товаров в магазине с помощью API Ozon
 
     Args:
         stocks(list): список словарей с остатками и артикулами
@@ -165,7 +169,8 @@ def update_stocks(stocks: list, client_id, seller_token):
 
 
 def download_stock():
-    """Скачивает файл ostatki с сайта casio и считывает оттуда данные.
+    """
+    Скачивает файл ostatki с сайта casio и считывает оттуда данные.
 
     Скачивает .xls файл с сайта, считывает данные о часах, удаляет скачанный
     файл и возвращает список словарей с этими данными.
@@ -204,7 +209,8 @@ def download_stock():
 
 
 def create_stocks(watch_remnants, offer_ids):
-    """Получает список словарей остатков товара
+    """
+    Получает список словарей остатков товара
 
     Количество остатков расчитывается следующим образом:
     остатки|вывод
@@ -229,7 +235,7 @@ def create_stocks(watch_remnants, offer_ids):
         >>> offer_ids = get_offer_ids('312345', 'qwe68324')
         >>> watch_remnants = download_stock()
         >>> create_stocks(watch_remnants, offer_ids)
-        [{'4124124': '6'}, {'3214124}: '100'}, ...]
+        [{'4124124': '6'}, {'3214124': '100'}, ...]
     """
     # Уберем то, что не загружено в seller
     stocks = []
@@ -251,7 +257,8 @@ def create_stocks(watch_remnants, offer_ids):
 
 
 def create_prices(watch_remnants, offer_ids):
-    """Создаёт список словарей с ценами товаров
+    """
+    Создаёт список словарей с ценами товаров
 
     Args:
         watch_remnants(list): список словарей с данными о часах
@@ -293,7 +300,8 @@ def create_prices(watch_remnants, offer_ids):
 
 
 def price_conversion(price: str) -> str:
-    """Преобразовывает цену, возвращает отформатированную строку цены.
+    """
+    Преобразовывает цену, возвращает отформатированную строку цены.
 
     Args:
         price (str): цена продукта
@@ -309,15 +317,58 @@ def price_conversion(price: str) -> str:
 
 
 def divide(lst: list, n: int):
-    """Разделяет список lst на части по n элементов
+    """
+    Разделяет список lst на части по n элементов
 
     Необходимо для приспособления к огранечениям API
+
+    Args:
+        lst (list): список для разделения
+        n (int): количество элементов в каждом списке
+
+    Yield:
+        list: подсписок длинной n
+
+    Example:
+        >>> list(divide([1, 2, 3, 4], 2))
+        [[1, 2], [3, 4]]
     """
     for i in range(0, len(lst), n):
         yield lst[i : i + n]
 
 
 async def upload_prices(watch_remnants, client_id, seller_token):
+    """
+    Асинхронно обновляет цены товаров на Озон
+
+    Использует вспомогательные функции для получения артикулов, получения
+    списка цен и для отправки данных частями в соответствии с
+    ограничениями API
+
+    Args:
+        watch_remnants (list): список словарей с данными о часах
+        (вывод функции download_stock)
+        client_id (str): идентификатор клиента
+        seller_id (str): ключ продавца
+
+    Return:
+        list: список словарей с информацией о ценах товаров
+
+    Example:
+        >>> watch_remnants = download_stock()
+        >>> upload_prices(watch_remnants, '312345', 'qwe68324')
+        [
+            {
+                "auto_action_enabled": "UNKNOWN",
+                "currency_code": "RUB",
+                "offer_id": "1234123",
+                "old_price": "0", "price":
+                "26'990.00 руб."
+            },
+            {...},
+            ...
+        ]
+    """
     offer_ids = get_offer_ids(client_id, seller_token)
     prices = create_prices(watch_remnants, offer_ids)
     for some_price in list(divide(prices, 1000)):
@@ -326,6 +377,32 @@ async def upload_prices(watch_remnants, client_id, seller_token):
 
 
 async def upload_stocks(watch_remnants, client_id, seller_token):
+    """
+    Асинхронно обновляет остатки товаров на Озон
+
+    Использует вспомогательные функции для получения артикулов, получения
+    списка остатков и для отправки данных частями в соответствии с
+    ограничениями API
+
+    Args:
+        watch_remnants (list): список словарей с данными о часах
+        (вывод функции download_stock)
+        client_id (str): идентификатор клиента
+        seller_id (str): ключ продавца
+
+    Return:
+        not_empty (list): список остатков товаров с их наличием
+        stocks (list): список всех остатков товаров
+
+    Example:
+        >>> watch_remnants = download_stock()
+        >>> non_empty, stocks = upload_stocks(
+        ...     watch_remnants, '312345', 'qwe68324')
+        >>> non_empty
+        [{'4124124': '6'}, {'3214124': '100'}, ...]
+        >>> stocks
+        [{'652342': '100'}, {'912362': '0'}, ...]
+    """
     offer_ids = get_offer_ids(client_id, seller_token)
     stocks = create_stocks(watch_remnants, offer_ids)
     for some_stock in list(divide(stocks, 100)):
