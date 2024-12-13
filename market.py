@@ -16,7 +16,7 @@ def get_product_list(page, campaign_id, access_token):
 
     Args:
         page (str): идентификатор страницы c результатами
-        campaign_id (int): идентификатор компании
+        campaign_id (str): идентификатор компании
         access_token (str): токен API Яндекс Маркет
 
     Return:
@@ -24,7 +24,7 @@ def get_product_list(page, campaign_id, access_token):
 
     Example:
         >>> page = 'eyBuZXh0SWQ6IDIzNDIgfQ=='
-        >>> campaign_id = 5325355
+        >>> campaign_id = '5325355'
         >>> access_token = 'ACMA:I4c4CxCSYaI41RSC2uYWP2qj3RK:151c0664'
         >>> get_product_list(page, campaign_id, access_token)
         {
@@ -75,7 +75,7 @@ def update_stocks(stocks, campaign_id, access_token):
     Args:
         stocks(list): список с информацией о остатках товаров
         (вывод функции create_stocks)
-        campaign_id (int): идентификатор компании
+        campaign_id (str): идентификатор компании
         access_token (str): токен API Яндекс Маркет
 
     Return:
@@ -83,7 +83,7 @@ def update_stocks(stocks, campaign_id, access_token):
 
     Example:
         >>> stocks = create_stocks(watch_remnants, offer_ids, warehouse_id)
-        >>> campaign_id = 5325355
+        >>> campaign_id = '5325355'
         >>> access_token = 'ACMA:I4c4CxCSYaI41RSC2uYWP2qj3RK:151c0664'
         >>> update_stocks(stocks, campaign_id, access_token)
         {
@@ -124,7 +124,7 @@ def update_price(prices, campaign_id, access_token):
 
     Args:
         prices(list): список словарей с ценами и артикулами товаров
-        campaign_id (int): идентификатор компании
+        campaign_id (str): идентификатор компании
         access_token (str): токен API Яндекс Маркет
 
     Return:
@@ -132,7 +132,7 @@ def update_price(prices, campaign_id, access_token):
 
     Example:
         >>> stocks = create_stocks(watch_remnants, offer_ids, warehouse_id)
-        >>> campaign_id = 5325355
+        >>> campaign_id = '5325355'
         >>> access_token = 'ACMA:I4c4CxCSYaI41RSC2uYWP2qj3RK:151c0664'
         >>> update_price(prices, campaign_id, access_token)
         {
@@ -159,14 +159,14 @@ def get_offer_ids(campaign_id, market_token):
     Получает артикулы товаров Яндекс маркета
 
     Args:
-        campaign_id (int): идентификатор компании
+        campaign_id (str): идентификатор компании
         market_token (str): токен API Яндекс Маркет
 
     Return:
         list: список артикулов товаров
 
     Example:
-        >>> campaign_id = 5325355
+        >>> campaign_id = '5325355'
         >>> market_token = 'ACMA:I4c4CxCSYaI41RSC2uYWP2qj3RK:151c0664'
         >>> get_offer_ids(campaign_id, market_token)
         ['4VRS5962338D', 'KJ-3598/4313', ...]
@@ -332,7 +332,7 @@ async def upload_prices(watch_remnants, campaign_id, market_token):
     Args:
         watch_remnants (list): список словарей с данными о часах
         (вывод функции download_stock)
-        campaign_id (int): идентификатор компании
+        campaign_id (str): идентификатор компании
         market_token (str): токен API Яндекс Маркет
 
     Return:
@@ -340,7 +340,7 @@ async def upload_prices(watch_remnants, campaign_id, market_token):
 
     Example:
         >>> watch_remnants = download_stock()
-        >>> campaign_id = 5325355
+        >>> campaign_id = '5325355'
         >>> market_token = 'ACMA:I4c4CxCSYaI41RSC2uYWP2qj3RK:151c0664'
         >>> upload_prices(watch_remnants, campaign_id, market_token)
         [
@@ -372,7 +372,7 @@ async def upload_stocks(watch_remnants, campaign_id, market_token, warehouse_id)
     Args:
         watch_remnants (list): список словарей с данными о часах
         (вывод функции download_stock)
-        campaign_id (int): идентификатор компании
+        campaign_id (str): идентификатор компании
         market_token (str): токен API Яндекс Маркет
         warehouse_id (int): Идентификатор склада
 
@@ -382,7 +382,7 @@ async def upload_stocks(watch_remnants, campaign_id, market_token, warehouse_id)
 
     Example:
         >>> watch_remnants = download_stock()
-        >>> campaign_id = 5325355
+        >>> campaign_id = '5325355'
         >>> market_token = 'ACMA:I4c4CxCSYaI41RSC2uYWP2qj3RK:151c0664'
         >>> warehouse_id = 4244
         >>> non_empty, stocks = upload_stocks(
